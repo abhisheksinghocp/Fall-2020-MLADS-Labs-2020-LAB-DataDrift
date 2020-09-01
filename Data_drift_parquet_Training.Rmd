@@ -1,0 +1,36 @@
+
+---
+title: "Data_drift_parquet_Training"
+output:
+  html_document:
+    toc: true
+---
+
+
+```{r}
+library(SparkR)
+
+#################################### pass model name #####################
+Input_data <- as.DataFrame(final_data) # pass input datafram    ##########
+model_name <- '<>'                    # pass model name        ##########
+##########################################################################
+
+Input_data$scoring_date <- current_timestamp()
+#date <- Sys.Date()
+dir <- paste('Data_Drift','/',model_name,'/Training',sep="")  # changes will apply once location is final
+output_dir <- file.path('/dbfs', dir)
+#print(output_dir)
+
+if (file.exists(output_dir)){
+    print(paste('location found',output_dir))
+} else {
+    dir.create(file.path(output_dir),recursive=TRUE)
+    print('not found')
+    print(paste('location created', output_dir))
+}
+
+dir <- paste('/Data_Drift','/',model_name,'/Training',sep="")
+print(dir)
+write.df(Input_data, path = dir, source = "parquet", mode = "overwrite")
+```
+
